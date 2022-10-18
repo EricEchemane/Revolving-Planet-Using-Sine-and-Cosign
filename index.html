@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+        }
+
+        .ring {
+            width: 70vmin;
+            height: 70vmin;
+            border-radius: 50%;
+            position: relative;
+            border: 1px dashed black;
+            /* rotate: -90deg; */
+            animation: revolveCW 60s linear infinite;
+        }
+
+        .planet {
+            position: absolute;
+            width: 2rem;
+            height: 2rem;
+            background-color: rgb(128, 5, 244);
+            border-radius: 50%;
+            will-change: top left;
+            color: white;
+            translate: -50% -50%;
+            /* rotate: 90deg; */
+            transition: 100ms;
+            display: grid;
+            place-items: center;
+            animation: revolveCCW 60s linear infinite;
+        }
+
+        @keyframes revolveCW {
+            100% {
+                rotate: 360deg;
+            }
+        }
+
+        @keyframes revolveCCW {
+            100% {
+                rotate: -360deg;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ring">
+        <div class="planet">A</div>
+        <div class="planet">B</div>
+        <div class="planet">C</div>
+        <div class="planet">D</div>
+        <div class="planet">E</div>
+        <div class="planet">F</div>
+    </div>
+    <div class="ring">
+        <div class="planet">A</div>
+        <div class="planet">B</div>
+        <div class="planet">C</div>
+    </div>
+
+    <script>
+        "use strict";
+        const getY = (centerPoint, distance, angle) => {
+            return Math.round(centerPoint.Y + distance * Math.sin(angle * (Math.PI / 180)));
+        };
+        const getX = (centerPoint, distance, angle) => {
+            return Math.round(centerPoint.X + distance * Math.cos(angle * (Math.PI / 180)));
+        };
+
+        const orbits = document.querySelectorAll('.ring');
+        orbits.forEach(orbit => {
+            const diameter = orbit.clientWidth;
+
+            const distance = diameter / 2;
+            const coordinates = { X: distance, Y: distance };
+            let angle = 0;
+
+            const y = getY(coordinates, distance, angle);
+            const x = getX(coordinates, distance, angle);
+            console.log('y:', y);
+            console.log('x:', x);
+            // planet.style.top = y + "px";
+            // planet.style.left = x + "px";
+
+            const planets = orbit.querySelectorAll('.planet');
+            const numberOfPlanets = planets.length;
+            const angleDistribution = 360 / numberOfPlanets;
+
+            planets.forEach((planet, index) => {
+                const angle = index * angleDistribution;
+                const y = getY(coordinates, distance, angle);
+                const x = getX(coordinates, distance, angle);
+                planet.style.filter = `hue-rotate(${angle}deg)`;
+                planet.style.top = y + "px";
+                planet.style.left = x + "px";
+            });
+        })
+
+    </script>
+</body>
+
+</html>
